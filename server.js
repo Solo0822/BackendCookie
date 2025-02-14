@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 app.use(requestIp.mw()); // ✅ Middleware to capture client IP
 
 // CORS Configuration
-const allowedOrigins = ["https://t10hits.netlify.app"];
+const allowedOrigins = ["cookiehits.netlify.app"];
 app.use(
   cors({
     origin: allowedOrigins,
