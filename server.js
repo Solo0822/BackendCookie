@@ -16,11 +16,11 @@ app.use(bodyParser.json());
 app.use(requestIp.mw()); // ✅ Middleware to capture client IP
 
 // CORS Configuration
-const allowedOrigins = ["cookiehits.netlify.app"];
 app.use(
   cors({
-    origin: allowedOrigins,
-    credentials: true,
+    origin: 'https://cookiehits.netlify.app', // Update with your frontend URL
+    methods: 'GET,POST,OPTIONS',
+    allowedHeaders: 'Content-Type',
   })
 );
 
