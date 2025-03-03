@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GDPR Compliance Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav>
+        <h1>GDPR Compliance Dashboard</h1>
+    </nav>
+    
+    <main>
+        <section id="analytics">
+            <canvas id="consentChart"></canvas>
+        </section>
+        
+        <section id="logs">
+            <h2>Consent Logs</h2>
+            <input type="text" id="search" placeholder="Search by IP or Date" onkeyup="filterLogs()">
+            <table>
+                <thead>
+                    <tr>
+                        <th>IP Address</th>
+                        <th>Consent Status</th>
+                        <th>Date & Time</th>
+                        <th>Preferences</th>
+                    </tr>
+                </thead>
+                <tbody id="logTableBody">
+                    <!-- Data will be inserted here dynamically -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script>
+        async function fetchConsentLogs() {
+            try {
+                const response = await fetch('/api/consent-logs'); // Adjust API endpoint
+                const data = await response.json();
+                const tableBody = document.getElementById('logTableBody');
+                tableBody.innerHTML = '';
+                
+                data.forEach(log => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${log.ip}</td>
+                        <td>${log.consentStatus}</td>
+                        <td>${new Date(log.timestamp).toLocaleString()}</td>
+                        <td>${log.preferences.join(', ')}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+                updateChart(data);
+            } catch (error) {
+                console.error('Error fetching logs:', error);
+            }
+        }
+        
+        function filterLogs() {
+            const searchValue = document.getElementById('search').value.toLowerCase();
+            const rows = document.querySelectorAll('#logTableBody tr');
+            
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(searchValue) ? '' : 'none';
+            });
+        }
+        
+        function updateChart(data) {
+            const ctx = document.getElementById('consentChart').getContext('2d');
+            const consentCounts = { accepted: 0, rejected: 0 };
+            
+            data.forEach(log => {
+                consentCounts[log.consentStatus.toLowerCase()]++;
+            });
+            
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Accepted', 'Rejected'],
+                    datasets: [{
+                        data: [consentCounts.accepted, consentCounts.rejected],
+                        backgroundColor: ['#4caf50', '#f44336']
+                    }]
+                }
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', fetchConsentLogs);
+    </script>
+</body>
+</html>
