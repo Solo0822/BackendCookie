@@ -5,7 +5,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const requestIp = require("request-ip"); // ✅ Correct way to get real client IP
 const axios = require("axios");
-
+const AdminRoutes = require('./routes/AdminRoutes');
 const cookieRoutes = require("./routes/cookieRoutes");
 const authRoutes = require("./routes/auth");
 
@@ -16,11 +16,13 @@ app.use(bodyParser.json());
 app.use(requestIp.mw()); // ✅ Middleware to capture client IP
 
 // CORS Configuration
+const allowedOrigins = ["https://pluspointnews.netlify.app", 'http://127.0.0.1:5500'];
 app.use(
   cors({
-    origin: 'https://cookiehits.netlify.app', // Update with your frontend URL
-    methods: 'GET,POST,OPTIONS',
-    allowedHeaders: 'Content-Type',
+    origin: allowedOrigins,
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"], // Allow credentials headers
+    methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
 
@@ -42,6 +44,7 @@ connectDB();
 // Routes
 app.use("/api", cookieRoutes);
 app.use("/api/auth", authRoutes);
+app.use('/api', AdminRoutes);
 
 // ✅ Route to get the real client IP and fetch geolocation data from `ip-api.com`
 app.get("/api/get-ipinfo", async (req, res) => {
