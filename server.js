@@ -7,6 +7,7 @@ const requestIp = require("request-ip"); // ✅ Correct way to get real client I
 const axios = require("axios");
 
 const cookieRoutes = require("./routes/cookieRoutes");
+const AdminRoutes = require("./routes/AdminRoutes");
 const authRoutes = require("./routes/auth");
 
 const app = express();
