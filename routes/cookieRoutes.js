@@ -105,10 +105,6 @@ router.post("/location", async (req, res) => {
     }
 });
 
-
-
-
-
 // 👉 **NEW: Route to Delete User Data (Auto & Manual Deletion)**
 router.delete("/delete-my-data/:consentId", async (req, res) => {
     try {
