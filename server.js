@@ -16,10 +16,21 @@ app.use(bodyParser.json());
 app.use(requestIp.mw()); // ✅ Middleware to capture client IP
 
 // CORS Configuration
-const allowedOrigins = ["https://cookiehits.netlify.app"];
+const allowedOrigins = [
+  "https://cookiehits.netlify.app", // Production frontend
+  "http://127.0.0.1:52631", // Local development (Adjust if needed)
+  "http://localhost:52631"  // Some setups may use localhost instead of 127.0.0.1
+];
+
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS not allowed for this origin"));
+      }
+    },
     credentials: true,
   })
 );
@@ -42,6 +53,7 @@ connectDB();
 // Routes
 app.use("/api", cookieRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api", AdminRoutes);
 
 // ✅ Route to get the real client IP and fetch geolocation data from `ip-api.com`
 app.get("/api/get-ipinfo", async (req, res) => {
