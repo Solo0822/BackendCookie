@@ -19,7 +19,7 @@ app.use(requestIp.mw()); // ✅ Middleware to capture client IP
 // CORS Configuration
 const allowedOrigins = [
   "https://cookiehits.netlify.app", // Production frontend
-  "http://127.0.0.1:52631", // Local development (Adjust if needed)
+  "http://127.0.0.1:5501", // Local development (Adjust if needed)
   "http://localhost:52631"  // Some setups may use localhost instead of 127.0.0.1
 ];
 
